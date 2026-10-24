@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trio AI - Interactive System Architecture</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --accent-broo: #38bdf8;
+      --accent-hermes: #34d399;
+      --accent-muse: #a78bfa;
+      --accent-relay: #fbbf24;
+      --text-main: #f1f5f9;
+      --text-sub: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 100%, rgba(167, 139, 250, 0.1) 0%, transparent 40%);
+    }
+
+    header {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-broo);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--text-sub);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .canvas-container {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+
+    svg.arch-svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .node {
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .node:hover {
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.4));
+      transform: translateY(-2px);
+    }
+
+    .pulse-line {
+      stroke-dasharray: 8, 8;
+      animation: dash 20s linear infinite;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+
+    .info-panel {
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .card h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card p {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .card ul {
+      margin-top: 0.75rem;
+      padding-left: 1.2rem;
+      color: var(--text-sub);
+      font-size: 0.9rem;
+    }
+
+    .card li {
+      margin-bottom: 0.35rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge"><span class="status-dot"></span> TRIO AI ECOSYSTEM • ARCHIFY LIVE VIEW</div>
+    <h1>Trio AI System Architecture</h1>
+    <p class="subtitle">Distributed AI Agent Mesh: Windows OpenClaw Host, VPS 24/7 Cloud Orchestrator, &amp; Meta EPYC Sandbox connected via Tailscale.</p>
+  </header>
+
+  <div class="canvas-container">
+    <svg class="arch-svg" viewBox="0 0 960 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background Mesh Grid -->
+      <defs>
+        <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="1"/>
+        </pattern>
+        <linearGradient id="broo-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0284c7"/>
+          <stop offset="100%" stop-color="#0369a1"/>
+        </linearGradient>
+        <linearGradient id="hermes-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#059669"/>
+          <stop offset="100%" stop-color="#047857"/>
+        </linearGradient>
+        <linearGradient id="muse-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#7c3aed"/>
+          <stop offset="100%" stop-color="#6d28d9"/>
+        </linearGradient>
+        <linearGradient id="relay-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </linearGradient>
+      </defs>
+      <rect width="960" height="480" fill="url(#grid)" />
+
+      <!-- Connection Lines with Pulse -->
+      <!-- Relay to Broo -->
+      <path d="M 480 240 L 180 340" stroke="#38bdf8" stroke-width="2" class="pulse-line" stroke-opacity="0.6"/>
+      <!-- Relay to Hermes -->
+      <path d="M 480 240 L 480 110" stroke="#34d399" stroke-width="2" class="pulse-line" stroke-opacity="0.6"/>
+      <!-- Relay to Muse -->
+      <path d="M 480 240 L 780 340" stroke="#a78bfa" stroke-width="2" class="pulse-line" stroke-opacity="0.6"/>
+
+      <!-- External Fafa User Connection to Telegram -->
+      <path d="M 480 30 L 480 70" stroke="#34d399" stroke-width="2" stroke-dasharray="4,4"/>
+
+      <!-- CENTER HUB: Tailscale Relay Board -->
+      <g class="node" id="node-relay">
+        <circle cx="480" cy="240" r="54" fill="url(#relay-grad)" stroke="#fbbf24" stroke-width="2" filter="drop-shadow(0 0 12px rgba(251, 191, 36, 0.4))"/>
+        <text x="480" y="235" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">RELAY BOARD</text>
+        <text x="480" y="253" text-anchor="middle" fill="#fef3c7" font-size="10">Port 8791 (Tailscale)</text>
+      </g>
+
+      <!-- TOP: Hermes (VPS Cloud 24/7) -->
+      <g class="node" id="node-hermes">
+        <rect x="360" y="50" width="240" height="90" rx="14" fill="url(#hermes-grad)" stroke="#34d399" stroke-width="2" />
+        <text x="480" y="78" text-anchor="middle" fill="#fff" font-weight="700" font-size="16">HERMES (VPS 24/7)</text>
+        <text x="480" y="98" text-anchor="middle" fill="#a7f3d0" font-size="11">Backend, 9Router, Telegram Bot</text>
+        <text x="480" y="118" text-anchor="middle" fill="#6ee7b7" font-size="10">IP: 100.117.126.61</text>
+      </g>
+
+      <!-- BOTTOM LEFT: Broo (Host Laptop) -->
+      <g class="node" id="node-broo">
+        <rect x="60" y="290" width="240" height="100" rx="14" fill="url(#broo-grad)" stroke="#38bdf8" stroke-width="2" />
+        <text x="180" y="320" text-anchor="middle" fill="#fff" font-weight="700" font-size="16">BROO / BROKCLAW</text>
+        <text x="180" y="340" text-anchor="middle" fill="#bae6fd" font-size="11">Windows OpenClaw Laptop</text>
+        <text x="180" y="358" text-anchor="middle" fill="#7dd3fc" font-size="10">QA Preflight • Hyperframes Video</text>
+        <text x="180" y="374" text-anchor="middle" fill="#38bdf8" font-size="9">Local Tools Execution</text>
+      </g>
+
+      <!-- BOTTOM RIGHT: Muse (Meta Sandbox) -->
+      <g class="node" id="node-muse">
+        <rect x="660" y="290" width="240" height="100" rx="14" fill="url(#muse-grad)" stroke="#a78bfa" stroke-width="2" />
+        <text x="780" y="320" text-anchor="middle" fill="#fff" font-weight="700" font-size="16">MUSE (META SANDBOX)</text>
+        <text x="780" y="340" text-anchor="middle" fill="#ddd6fe" font-size="11">EPYC Ubuntu 24.04 (Outbound)</text>
+        <text x="780" y="358" text-anchor="middle" fill="#c4b5fd" font-size="10">Llama 3.1 + SAM 3.1 Research</text>
+        <text x="780" y="374" text-anchor="middle" fill="#a78bfa" font-size="9">IP: 100.106.204.33</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="info-panel">
+    <div class="card" style="border-top: 3px solid var(--accent-hermes);">
+      <h3>🤖 Hermes (VPS 24/7)</h3>
+      <p>Juru bicara utama grup Telegram dan koordinator 24/7.</p>
+      <ul>
+        <li>Host bot Telegram resmi &amp; 9Router gateway.</li>
+        <li>Gatekeeper QA Lapis 3 (Verifikasi rilis).</li>
+        <li>Runner cron, webhook, dan auto-deploy GitHub Pages.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-top: 3px solid var(--accent-broo);">
+      <h3>💻 Broo (Windows Laptop)</h3>
+      <p>Eksekutor frontend, automasi desktop, dan video engine.</p>
+      <ul>
+        <li>OpenClaw Desktop Host &amp; browser tools.</li>
+        <li>Hyperframes Video Engine (Gemini 2.5 TTS voiceover).</li>
+        <li>Lapis 2 Deterministic QA Pre-flight checker.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-top: 3px solid var(--accent-muse);">
+      <h3>🧠 Muse (Meta Sandbox)</h3>
+      <p>Riset kecerdasan produk, ideation, dan proposal hackathon.</p>
+      <ul>
+        <li>Host Meta Sandbox EPYC Ubuntu (Outbound-only).</li>
+        <li>Pipeline Hackathon Warung (Llama 3.1 + SAM 3.1).</li>
+        <li>Lapis 1 Semantic &amp; Content Reviewer.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <p>⚡ Automatically deployed via Deploy Key to GitHub Pages • Trio AI © 2026</p>
+  </footer>
+
+</body>
+</html>
