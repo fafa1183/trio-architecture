@@ -5086,23 +5086,25 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </head>
 <body>
 
-<style>
+<style id="trio-global-nav-css">
   .trio-nav-container {
     position: fixed;
     top: 14px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 999999;
+    z-index: 9999999;
     display: flex;
     gap: 6px;
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 9999px;
-    padding: 5px 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 6px 10px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.7);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 95vw;
+    overflow-x: auto;
   }
   .trio-nav-btn {
     text-decoration: none;
@@ -5119,22 +5121,31 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   }
   .trio-nav-btn:hover {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
   }
   .trio-nav-btn.active {
     color: #ffffff;
     background: #2563eb;
-    font-weight: 600;
-    box-shadow: 0 0 14px rgba(37, 99, 235, 0.6);
+    font-weight: 700;
+    box-shadow: 0 0 16px rgba(37, 99, 235, 0.7);
   }
 </style>
 
-<div class="trio-nav-container">
-  <a href="index.html" class="trio-nav-btn">🏛️ Overview</a>
+<nav class="trio-nav-container" aria-label="Trio Navigation">
+  <a href="index.html" class="trio-nav-btn">🏛️ 1. Overview (Awal)</a>
+  <a href="topic-dashboard.html" class="trio-nav-btn">🎯 2. Topic Workflow</a>
   <a href="trio-dataflow.html" class="trio-nav-btn active">🔄 Data-Flow</a>
   <a href="trio-routing.html" class="trio-nav-btn">⚡ Routing</a>
   <a href="rakpintar.html" class="trio-nav-btn">🛍️ RakPintar</a>
-</div>
+</nav>
+
+
+
+
+
+
+
+
 
 
   <!-- Toolbar: theme, live visual style, trace motion, presentation stage, and export.
