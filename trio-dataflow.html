@@ -5085,6 +5085,58 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   </style>
 </head>
 <body>
+
+<style>
+  .trio-nav-container {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    display: flex;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    padding: 5px 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  .trio-nav-btn {
+    text-decoration: none;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .trio-nav-btn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .trio-nav-btn.active {
+    color: #ffffff;
+    background: #2563eb;
+    font-weight: 600;
+    box-shadow: 0 0 14px rgba(37, 99, 235, 0.6);
+  }
+</style>
+
+<div class="trio-nav-container">
+  <a href="index.html" class="trio-nav-btn">🏛️ Overview</a>
+  <a href="trio-dataflow.html" class="trio-nav-btn active">🔄 Data-Flow</a>
+  <a href="trio-routing.html" class="trio-nav-btn">⚡ Routing</a>
+  <a href="rakpintar.html" class="trio-nav-btn">🛍️ RakPintar</a>
+</div>
+
+
   <!-- Toolbar: theme, live visual style, trace motion, presentation stage, and export.
        Motion appears only for trace-enabled artifacts and has no shortcut;
        Keyboard: T toggles theme, S cycles style, F toggles the stage, E opens export. -->
