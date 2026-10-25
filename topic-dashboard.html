@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trio AI — Topic Workflow & Live Tracker</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.85);
+      --border: rgba(255, 255, 255, 0.1);
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.35);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --broo: #06b6d4;
+      --hermes: #8b5cf6;
+      --muse: #ec4899;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Nav Bar */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 13, 22, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.3px;
+    }
+    .brand-badge {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    /* Topic Buttons */
+    .topic-selector {
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .topic-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .topic-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .topic-tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+    }
+    .back-btn:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Main Container */
+    .main-content {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Topic Header & Live Status Card */
+    .topic-header-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+    }
+    .topic-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .topic-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .topic-status-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-running {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+
+    .topic-desc {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Live Tasks Grid */
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .task-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .agent-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .agent-broo { background: rgba(6, 182, 212, 0.2); color: var(--broo); border: 1px solid rgba(6, 182, 212, 0.4); }
+    .agent-hermes { background: rgba(139, 92, 246, 0.2); color: var(--hermes); border: 1px solid rgba(139, 92, 246, 0.4); }
+    .agent-muse { background: rgba(236, 72, 153, 0.2); color: var(--muse); border: 1px solid rgba(236, 72, 153, 0.4); }
+
+    .task-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .task-role {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .task-desc {
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.4;
+    }
+
+    /* Workflow Frame Viewer */
+    .workflow-viewer {
+      flex: 1;
+      min-height: 700px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+    }
+    .viewer-header {
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.25);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .fullscreen-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .fullscreen-link:hover { text-decoration: underline; }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 680px;
+      border: none;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="brand">
+      <span>🏛️ Trio AI Ecosystem</span>
+      <span class="brand-badge">Topic Command</span>
+    </div>
+
+    <!-- Topic Selector Tabs -->
+    <div class="topic-selector">
+      <button class="topic-tab-btn active" onclick="setTopic('random')">🎲 Random (Kantor)</button>
+      <button class="topic-tab-btn" onclick="setTopic('hackathon')">🛍️ Hackathon Meta</button>
+      <button class="topic-tab-btn" onclick="setTopic('trading')">📈 Trading & Ops</button>
+      <button class="topic-tab-btn" onclick="setTopic('overview')">🌐 Global Mesh</button>
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html" class="back-btn">← Interactive Archify</a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Topic Status & Active Tasks Header -->
+    <section class="topic-header-card">
+      <div class="topic-title-row">
+        <h1 class="topic-title" id="t-title">Topic: Random (Kantor & Koordinasi Umum)</h1>
+        <div class="topic-status-pill status-running">
+          <span class="pulse-dot"></span>
+          <span id="t-status">SEDANG DIKERJAKAN (ACTIVE)</span>
+        </div>
+      </div>
+      <p class="topic-desc" id="t-desc">
+        Pusat komando koordinasi umum Trio AI, isolasi obrolan tim, eksperimen teknologi baru, serta live dashboard per topic.
+      </p>
+
+      <!-- Sedang Dikerjakan Grid -->
+      <div class="tasks-grid" id="t-tasks">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Workflow Diagram Frame -->
+    <section class="workflow-viewer">
+      <div class="viewer-header">
+        <span>📊 <strong>Archify Interactive Workflow Diagram</strong></span>
+        <a href="workflow-kreatif.html" target="_blank" class="fullscreen-link" id="t-direct-link">Buka Tab Penuh ↗</a>
+      </div>
+      <iframe id="t-frame" src="workflow-kreatif.html"></iframe>
+    </section>
+  </main>
+
+  <script>
+    const TOPICS = {
+      'random': {
+        title: 'Topic: Random (Kantor & Koordinasi)',
+        desc: 'Pusat komando koordinasi umum Trio AI, isolasi thread kantor, eksperimen teknologi baru, serta pengembangan live workflow dashboard.',
+        status: 'SEDANG DIKERJAKAN',
+        frame: 'workflow-kreatif.html',
+        tasks: [
+          { agent: 'Broo', role: 'Frontend & UI Ops', desc: 'Deploying Topic Dashboard & integrasi real-time frame Archify ke GitHub Pages.' },
+          { agent: 'Hermes', role: 'VPS & Security', desc: 'Orchestrating backend feed /topic-state & filter isolasi ketat antar-topik Telegram.' },
+          { agent: 'Muse', role: 'Meta Sandbox PIC', desc: 'Arsitek visual workflow Archify suite (Random, Hackathon, Trading) & review skema.' }
+        ]
+      },
+      'hackathon': {
+        title: 'Topic: Hackathon Meta (RakPintar)',
+        desc: 'Pengembangan produk cerdas berbasis Meta AI: Segment Anything Model (SAM 3.1) dan Muse Spark untuk visual kasir warung otomatis.',
+        status: 'BLUEPRINT READY',
+        frame: 'workflow-hackathon.html',
+        tasks: [
+          { agent: 'Muse', role: 'Lead AI Engineer', desc: 'Riset visual detection SAM 3.1 & prompt orchestration ideasi produk warung pintar.' },
+          { agent: 'Hermes', role: 'QA & Microservices', desc: 'Validasi latency model, dependency security audit, & mock API endpoint service.' },
+          { agent: 'Broo', role: 'Edge & Video Demo', desc: 'Persiapan UI prototype di laptop & pipeline rendering visual interaktif.' }
+        ]
+      },
+      'trading': {
+        title: 'Topic: Trading & Bot Ops',
+        desc: 'Ekosistem automasi 24/7 di VPS Ubuntu: 9Router bridge, webhook watcher, alerting real-time, dan cron scheduler tanpa downtime.',
+        status: 'ACTIVE RUNNING',
+        frame: 'workflow-trading.html',
+        tasks: [
+          { agent: 'Hermes', role: 'Single Spokesperson & Runner', desc: 'Runner cronjob 24/7, webhook receiver, dan gateway 9Router AI traffic.' },
+          { agent: 'Broo', role: 'Client UI Monitor', desc: 'Displaying telemetry status, health alert checks, & Tailscale bridge link.' },
+          { agent: 'Muse', role: 'Analytics & Memory', desc: 'Penyimpanan buffer strategi, pattern analysis, & evaluasi performa model.' }
+        ]
+      },
+      'overview': {
+        title: 'Global Trio AI Infrastructure Mesh',
+        desc: 'Peta arsitektur terdistribusi resmi Trio AI menghubungkan Laptop Windows (Broo), VPS Ubuntu (Hermes), dan Meta VM (Muse) via Tailscale.',
+        status: 'LIVE SECURE',
+        frame: 'trio-ai.html',
+        tasks: [
+          { agent: 'Broo', role: 'Laptop Node', desc: 'UI Prototyping, browser Chrome automation, Gemini TTS voiceover engine.' },
+          { agent: 'Hermes', role: 'VPS Node', desc: 'Backend orchestration, Telegram bot spokesperson, security secret guardian.' },
+          { agent: 'Muse', role: 'Sandbox Node', desc: 'High-compute research, system design, prompt engineering & Archify generator.' }
+        ]
+      }
+    };
+
+    function setTopic(key) {
+      const data = TOPICS[key];
+      if (!data) return;
+
+      // Update Tab Styles
+      document.querySelectorAll('.topic-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick').includes(key));
+      });
+
+      // Update Content Info
+      document.getElementById('t-title').innerText = data.title;
+      document.getElementById('t-desc').innerText = data.desc;
+      document.getElementById('t-status').innerText = data.status;
+      document.getElementById('t-frame').src = data.frame;
+      document.getElementById('t-direct-link').href = data.frame;
+
+      // Render Task Cards
+      const container = document.getElementById('t-tasks');
+      container.innerHTML = '';
+      data.tasks.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'task-card';
+        div.innerHTML = `
+          <div class="agent-tag agent-${t.agent.toLowerCase()}">${t.agent}</div>
+          <div class="task-meta">
+            <span class="task-role">${t.role}</span>
+            <span class="task-desc">${t.desc}</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Initialize with 'random'
+    setTopic('random');
+  </script>
+</body>
+</html>
