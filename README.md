@@ -12,11 +12,11 @@ View the interactive animated architecture live at:
 1. **Broo (OpenClaw / Local Laptop Host):**
    - Tooling execution, local browser automation, QA pre-flight layer, video production pipeline (D:\hyperframes).
 2. **Hermes (VPS Ubuntu 24/7):**
-   - Central orchestration, 9Router backend, persistent relays, public spokesperson, gatekeeper QA.
+   - Central orchestration, 9Router backend, persistent relays, public spokesperson, final secret scan before push.
 3. **Muse (Meta Sandbox EPYC Ubuntu):**
-   - Product ideation, prompt engineering, semantic validation, Hackathon Meta (Llama 3.1 + SAM 3.1).
+   - Product ideation, prompt engineering, semantic validation, Hackathon Meta (Muse Spark + SAM 3.1).
 4. **Relay Board (Tailscale Private Mesh):**
-   - Internal async board connecting all nodes seamlessly via http://100.117.126.61:8791.
+   - Internal async board connecting all nodes seamlessly on the private Tailscale mesh (port 8791).
 
 ---
 *Maintained automatically by Trio AI.*
